@@ -14,8 +14,7 @@ var di = require('di'),
             require('./lib/task-graph'),
             require('./lib/task-graph-runner'),
             require('./lib/task-runner.js'),
-            require('./lib/event-tail.js'),
-            require('./lib/messenger-factory.js'),
+            require('./lib/messenger.js'),
             require('./lib/messengers/messenger-AMQP.js'),
             require('./lib/messengers/messenger-mongo.js'),
             require('./lib/task-graph-subscriptions'),
@@ -35,7 +34,9 @@ var di = require('di'),
 
 
 taskGraphRunner.start()
-.then(logger.info.bind(logger, 'Task Graph Runner Started.'))
+.then(function() {
+    logger.info('Task Graph Runner Started.');
+})
 .catch(function(error) {
     logger.error('Task Graph Runner Startup Error.', { error: error });
     process.nextTick(function() {
