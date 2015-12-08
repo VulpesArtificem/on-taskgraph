@@ -23,6 +23,7 @@ var di = require('di'),
             require('./lib/lease-expiration-poller'),
             require('./lib/loader'),
             require('./lib/service-graph'),
+            require('./lib/rx-mixins'),
             require('./lib/stores/mongo')
         ])
     ),
@@ -45,7 +46,12 @@ taskGraphRunner.start(options)
     logger.info('Task Graph Runner Started.');
 })
 .catch(function(error) {
-    logger.error('Task Graph Runner Startup Error.', { error: error });
+    logger.error('Task Graph Runner Startup Error.', {
+        // stacks on some error objects (particularly from the assert library)
+        // don't get printed if part of the error object so separate them out here.
+        error: _.omit(error, 'stack'),
+        stack: error.stack
+    });
     process.nextTick(function() {
         process.exit(1);
     });
